@@ -11,6 +11,8 @@ import { Filter } from './Filter/Filter.jsx';
 import { Layout, HeadTitle, ContactsTitle } from './Layout.js';
 import { GlobalStyle } from './GlobaleStyle.js';
 
+const localStorageKey = 'add-contacts';
+
 export class App extends Component {
   state = {
     // contacts: [],
@@ -67,6 +69,26 @@ export class App extends Component {
   //   }
   //   this.reset();
   // };
+
+  //***Lifecicle */
+
+  componentDidMount() {
+    const savedAddedContacts = localStorage.getItem(localStorageKey);
+    if (savedAddedContacts !== null) {
+      this.setState({
+        contacts: JSON.parse(savedAddedContacts),
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { contacts: prevContacts } = prevState;
+    const { contacts: nextContacts } = this.state;
+
+    if (prevContacts !== nextContacts) {
+      localStorage.setItem(localStorageKey, JSON.stringify(nextContacts));
+    }
+  }
 
   addContact = contact => {
     const isInContacts = this.state.contacts.some(
